@@ -159,7 +159,7 @@ urlpatterns = [
     path('add', productions.production_add, name='production-add'),
 
     path('profile/edit', profiles.profile_edit, name='profile-edit'),
-    path('profile/<slug:username>', profiles.profile, name='profile'),
+    path('profile/<path:username>', profiles.profile, name='profile'),
     path('profile', profiles.profile_user, name='profile-user'),
 
     path('publicity/feed', NewsFeed()),
