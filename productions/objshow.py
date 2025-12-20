@@ -43,7 +43,8 @@ def productions_filter(object, type, date_filter):
         max_press_date=Max(press_date_field),
         max_start_date=Max(start_date_field)
     )
-    filter = (~Q(max_end_date='') & Q(max_end_date__lt=now)) | Q(max_end_date='', max_press_date__lt=now) | Q(max_end_date='', max_press_date__isnull=True, max_start_date__lt=now)
+
+    filter = (~Q(max_end_date='') & Q(max_end_date__lt=now)) | Q(max_end_date='', max_press_date__isnull=False, max_press_date__lt=now) | Q(max_end_date='', max_press_date__isnull=True, max_start_date__lt=now)
     if filter_extra:
         if date_filter == 'past':
             o = o.filter(filter, place__place__in=object)
