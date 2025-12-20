@@ -16,6 +16,7 @@ class PhotoForm(forms.ModelForm):
             'object_id': target_object.pk,
         })
         super(PhotoForm, self).__init__(initial=initial, *args, **kwargs)
+        self.fields['license'].required = True
 
     class Meta:
         model = Photo
