@@ -45,6 +45,9 @@ class RegistrationForm(forms.ModelForm):
         if confusables.is_dangerous(username):
             raise forms.ValidationError("This name cannot be registered. Please choose a different name.", code="invalid")
 
+        if username.lower() in ('theatricalia', 'admin', 'administrator', 'info', 'root', 'abuse', 'marketing', 'sales', 'security', 'support'):
+            raise forms.ValidationError("This name cannot be registered. Please choose a different name.", code="invalid")
+
         try:
             User.objects.get(username=username)
         except User.DoesNotExist:
