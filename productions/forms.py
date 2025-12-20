@@ -15,7 +15,7 @@ from autocomplete.widgets import ForeignKeySearchInput
 
 class CastCrewNullBooleanSelect(forms.widgets.NullBooleanSelect):
     def __init__(self, attrs=None):
-        choices = ((u'1', 'Unknown'), (u'2', 'Cast'), (u'3', 'Crew'))
+        choices = ((u'unknown', 'Unknown'), (u'true', 'Cast'), (u'false', 'Crew'))
         super(forms.widgets.NullBooleanSelect, self).__init__(attrs, choices)
 
 
