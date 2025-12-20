@@ -9,6 +9,7 @@ from places.models import Place, Name
 from people.models import Person
 from merged.models import Redirect
 from common.models import Alert
+from reversion.models import Version
 
 
 def check_old_exists(row):
@@ -43,16 +44,21 @@ def merge_thing(main, alt, redirect_obj=None):
         merge_production(main, alt)
 
     ctype = ContentType.objects.get_for_model(alt)
+    # Was a redirect to the thing we are now merging, change to now redirect to new
     Redirect.objects.filter(content_type=ctype, new_object_id=alt.id).update(new_object_id=main.id)
+    # Was a redirect from the thing we are now merging, update to redirect from new
     Redirect.objects.filter(content_type=ctype, old_object_id=alt.id).update(old_object_id=main.id)
+    Version.objects.get_for_object(alt).update(object_id=main.id)
 
     if redirect_obj:
+        Redirect.objects.exclude(id=redirect_obj.id).filter(content_type=ctype, old_object_id=main.id, new_object_id=main.id).delete()
         # Reassign in case reverse-merged
         redirect_obj.old_object_id = alt.id
         redirect_obj.new_object = main
         redirect_obj.approved = True
         redirect_obj.save()
     else:
+        Redirect.objects.filter(content_type=ctype, old_object_id=main.id, new_object_id=main.id).delete()
         Redirect.objects.create(old_object_id=alt.id, new_object=main, approved=True)
 
     if cls is Person:
