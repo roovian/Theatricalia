@@ -228,6 +228,13 @@ class Production(models.Model):
     def title(self):
         return self.get_companies_display() or ''
 
+    def contributors(self):
+        try:
+            versions = Version.objects.get_for_object(self).select_related('revision__user')
+            return list(dict.fromkeys([v.revision.user for v in versions if v.revision.user.name]))
+        except:
+            return []
+
     def creator(self):
         if self.source:
             return ''

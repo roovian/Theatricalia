@@ -135,20 +135,10 @@
     <li>Source: {{ production.source|safe }}</li>
 {% endif %}
 
-{% if production.last_modifier != production.creator %}
-    {% if production.creator.name %}
-        <li>Added by <a href="{{ production.creator.profile.get_absolute_url }}">{{ production.creator.name }}</a>, last modified by <a href="{{ production.last_modifier.profile.get_absolute_url }}">{{ production.last_modifier.name }}</a>.</li>
-    {% else %}
-        <li>Last modified by <a href="{{ production.last_modifier.profile.get_absolute_url }}">{{ production.last_modifier.name }}</a>.</li>
-    {% endif %}
-{% else %}
-    {% if production.creator.name %}
-        <li>Added by <a href="{{ production.creator.profile.get_absolute_url }}">{{ production.creator.name }}</a>.</li>
-    {% else %}
-        {% if production.last_modifier.name %}
-            <li>Last modified by <a href="{{ production.last_modifier.profile.get_absolute_url }}">{{ production.last_modifier.name }}</a>.</li>
-        {% endif %}
-    {% endif %}
+{% if production.contributors %}
+    <li>Contributors: {% for c in production.contributors %}
+        <a href="{{ c.profile.get_absolute_url }}">{{ c.name }}</a>{% if not forloop.last %}, {% endif %}
+{% endfor %}
 {% endif %}
 
 </ul>
