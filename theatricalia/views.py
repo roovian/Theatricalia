@@ -36,7 +36,7 @@ def home(request):
         latest = {}
 
     try:
-        latest_comment = Comment.objects.filter(is_removed=False).order_by('-id')[0]
+        latest_comment = Comment.objects.filter(is_removed=False).order_by('-submit_date')[0]
     except IndexError:
         latest_comment = {}
 
