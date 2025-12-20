@@ -245,7 +245,7 @@ at <a title="Permanent link to this observation" href="{{ request.path }}#o{{ ob
 <a href="{{ observation.user.profile.get_absolute_url }}">{{ observation.user_name|prettify }}</a> noted:
 {% endif %}
 </p>
-<blockquote>{{ observation.comment|prettify|urlize|linebreaks }}</blockquote>
+<blockquote>{{ observation.comment|urlize|prettify|linebreaks }}</blockquote>
 </li>
 {% endfor %}
 </ol>

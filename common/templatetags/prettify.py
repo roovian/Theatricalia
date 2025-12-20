@@ -22,7 +22,9 @@ def prettify(str):
     # Do our own conditional_escape, as we want to do it in parts
 
     # Escape first, but don't do ' and " as we're going to be changing them
-    if not isinstance(str, SafeData):
+    if isinstance(str, SafeData):
+        pass
+    else:
         str = str.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
     # Escaped, for if you really want them
@@ -38,24 +40,22 @@ def prettify(str):
     str = str.replace('``', '&ldquo;').replace("''", '&rdquo;')
     cockney = ["'tain't", "'twere", "'twas", "'tis", "'twill", "'til", "'bout", "'nuff", "'round", "'cause", "'em"]
     str = re.sub('(?i)' + '|'.join(cockney), lambda x: x.group(0).replace("'", '&rsquo;'), str)
-    if str.find('<') == -1:
-        str = smart_quotes(str)
-    else:
-        # Must be Safe data with HTML tags in it
-        lines = []
-        for line in re.split('(<[^>]*>)', str):
-            if not re.match('<[^>]*>', line):
-                line = smart_quotes(line)
-            lines.append(line)
-        str = ''.join(lines)
+
+    lines = []
+    for line in re.split('(<[^>]*>)', str):
+        if not re.match('<[^>]*>', line):
+            line = smart_quotes(line)
+            line = re.sub(r'\b(\d+)(st|nd|rd|th)\b', r'\1<sup>\2</sup>', line)  # Nice ordinals
+            # Letterspace strings of capitals (no digits due to postcodes, for now)
+            line = re.sub(r'\b([A-Z]{3,})\b', r'<abbr>\1</abbr>', line)
+        lines.append(line)
+    str = ''.join(lines)
+
     # str = re.sub("'([dlstv])", r'&rsquo;\1', str) # Nice apostrophe
     # str = re.sub("s'\s", r's&rsquo; ', str) # Nice apostrophe
     # str = re.sub("O'", r'O&rsquo;', str) # Nice apostrophe
 
-    str = re.sub(r'\b(\d+)(st|nd|rd|th)\b', r'\1<sup>\2</sup>', str)  # Nice ordinals
     str = re.sub(r'([A-Z]\.)\s+(?=[A-Z])', r'\1&#8201;', str)  # Hair or thin spaces between intermediary periods
-    # Letterspace strings of capitals (no digits due to postcodes, for now)
-    str = re.sub(r'\b([A-Z]{3,})\b', r'<abbr>\1</abbr>', str)
 
     # Nice small numbers
     # str = re.sub(r'\s1\s', ' one ', str)
