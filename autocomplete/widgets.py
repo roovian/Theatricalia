@@ -40,6 +40,9 @@ class ForeignKeySearchInput(forms.MultiWidget):
 
         return obj
 
+    def id_for_label(self, id_):
+        return f"{id_}_0"
+
     def __init__(self, rel, search_fields, attrs=None):
         self.rel = rel
         self.search_fields = search_fields
