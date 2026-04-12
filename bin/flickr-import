@@ -40,6 +40,6 @@ for predicate in predicates['predicates']['predicate']:
         value = value['_content']
         photos = call_api('flickr.photos.search', machine_tags='theatricalia:%s=%s' % (predicate, value), eval=False)
         mkdir_p("%s/%s" % (DIR, predicate))
-        fp = open("%s/%s/%s" % (DIR, predicate, value), 'w')
+        fp = open("%s/%s/%s" % (DIR, predicate, value), 'wb')
         fp.write(photos)
         fp.close()
