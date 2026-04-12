@@ -30,6 +30,9 @@ def prettify(str):
     # Escaped, for if you really want them
     str = str.replace(r'\'', '&#39;').replace(r'\"', '&quot;').replace(r'\\', '\\')
 
+    # My special links
+    str = re.sub(r'\[(.*?)\]\(#a-(.*?)\)', r'<a href="/a/\2">\1</a>', str)
+
     # Nice dashes and ellipses
     str = re.sub(r'\s-\s', ' &ndash; ', str)
     str = re.sub(r'(\d)-(\d)', r'\1&ndash;\2', str)
