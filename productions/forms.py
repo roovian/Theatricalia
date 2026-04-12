@@ -150,6 +150,17 @@ class CompanyInlineForm(forms.ModelForm):
         self.fields['production'].required = False
         self.fields['production'].widget = forms.HiddenInput()
 
+    def clean(self):
+        super().clean()
+        cleaned_data = self.cleaned_data
+        company = cleaned_data.get("productioncompany")
+        if company.id:
+            if Production_Companies.objects.exclude(id=self.instance.id).filter(
+                production=cleaned_data["production"].id,
+                productioncompany=company.id
+            ).exists():
+                self.add_error("productioncompany", 'This company is already associated with this production')
+
     def _get_validation_exclusions(self):
         exclusions = super(CompanyInlineForm, self)._get_validation_exclusions()
         add_to_set_or_list(exclusions, 'productioncompany')
@@ -292,7 +303,10 @@ class PartForm(forms.ModelForm):
                 self.fields['person_choice'].choices = choices  # = forms.ChoiceField( label='Person', choices=choices, widget = forms.RadioSelect() )
             else:
                 self._flag_up_no_results = True
-        return Person.objects.from_name(person)
+        n = Person.objects.from_name(person)
+        if len(n.first_name) > 50 or len(n.last_name) > 50:
+            raise forms.ValidationError('That name is too long')
+        return n
 
     def save(self, **kwargs):
         if self.cleaned_data.get('person_choice') == 'new':
